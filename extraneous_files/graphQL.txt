@@ -1,0 +1,75 @@
+GraphQL test queries: https://app.speckle.systems/graphql
+
+query GetUser{
+ activeUser {
+   name
+   id
+ }
+}
+
+-----
+
+query GetProjects{
+ activeUser {
+   projects {
+     items {
+       name
+       description
+       id
+     }
+   }
+ }
+}
+
+-----
+
+query GetProject($projectId: String!){
+ project(id: $projectId) {
+   id
+   name
+ }
+}
+
+Variables: { "projectId": "f6760dda07" }
+
+-----
+
+query GetModelsFromProject($projectId: String!){
+ project(id: $projectId) {
+   models {
+     items {
+       id
+       name
+     }
+   }
+ }
+}
+
+Variables: { "projectId": "f6760dda07" }
+
+-----
+
+query GetModelFromProject($projectId: String!, $modelId: String!){
+ project(id: $projectId) {
+   model(id: $modelId) {
+     name
+     description
+     previewUrl
+     versions {
+       totalCount
+       items {
+         id
+         createdAt
+       }
+     }
+   }
+ }
+}
+
+Variables: { "projectId": "f6760dda07",
+ "modelId": "e3bb17f663" }
+
+ -----
+
+ Navigating this API seems to be represented within specklepy's various objects
+ and their method calls.
