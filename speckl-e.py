@@ -1,4 +1,5 @@
 #--------------------------
+#to run: streamlit run c:/Users/Minou/Desktop/speckl-e/speckl-e.py
 #IMPORT LIBRARIES
 #import streamlit
 import streamlit as st
