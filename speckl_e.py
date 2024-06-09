@@ -53,9 +53,9 @@ with input:
     #-------
 
 	#User Input boxes
-    speckleServer = serverCol.text_input("Server URL","speckle.xyz", help="Speckle server to connect.")
+    speckleServer = serverCol.text_input("Server URL", help="Speckle server to connect.")
     #"3449a8170a0bd5f1b9c8a1c6c03e9fadbc91928b34"
-    speckleToken = tokenCol.text_input("Speckle token","3449a8170a0bd5f1b9c8a1c6c03e9fadbc91928b34", help="If you don't know how to get your token, take a look at this [link](<https://speckle.guide/dev/tokens.html>)👈")
+    speckleToken = tokenCol.text_input("Speckle token", help="If you don't know how to get your token, take a look at this [link](<https://speckle.guide/dev/tokens.html>)👈")
     stream = False
     if speckleServer and speckleToken:
         try:
