@@ -40,7 +40,7 @@ For users with the appropriate hardware and know-how, we incorporated a method o
 
 ### How we built it
 
-Speckle's guide LINK ME on creating a python streamlit app served as a scaffold for this project. Time was spent walking through the tutorial which then transitioned into looking at the graphQL sandbox. After achieving successful communication, we then began researching open-source 3D asset generators. Shap-E from openAI was discovered and chosen as our base model. As hardware concerns began to arise, we decided to implement an alternative application in tandem with the progress of leveraging Shap-E. This complementary implementation was built to connect to an enterprise-level AI that was hosted on dedicated hardware elsewhere.
+Speckle's guide on creating a python streamlit app served as a scaffold for this project. Time was spent walking through the tutorial which then transitioned into looking at the graphQL sandbox. After achieving successful communication, we then began researching open-source 3D asset generators. Shap-E from openAI was discovered and chosen as our base model. As hardware concerns began to arise, we decided to implement an alternative application in tandem with the progress of leveraging Shap-E. This complementary implementation was built to connect to an enterprise-level AI that was hosted on dedicated hardware elsewhere.
 
 ### Challenges we ran into
 
@@ -59,7 +59,7 @@ From a generative AI standpoint, creating three-dimensional assets from a text p
 
 ### What's next for Speckl-e
 
-It would be great to show our users their freshly produced assets in the app without having to navigate to Speckle (even though our app loads the assets directly into Speckle automatically). We were close to accomplishing this, but our lack of experience implementing streamlit ultimately presented a clear stopping point giver the duration of the project.
+It would be great to show our users their freshly produced assets in the app without having to navigate to Speckle (even though our app loads the assets directly into Speckle automatically). We were close to accomplishing this, but our lack of experience implementing streamlit ultimately presented a clear stopping point given the duration of the project.
 
 For the local asset generation, there are useful model parameters that can be considered. Shap-E can create multiple, unique inferences from a single text prompt since Shap-E is diffusion-based. Still, it would be nice for the user to have the option to generate multiple assets. Some of the finer points of the Shap-E model are also variable and can be fine-tuned to tweak the outputs. Something akin to an advanced menu that would allow the user to change default values would be of great use.
 
