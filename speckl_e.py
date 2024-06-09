@@ -112,11 +112,15 @@ with input:
 
         response=requests.post(url=endpoint,headers=headers,files=files)
 
-        if response.status_code == 200:
+        if response.status_code not in range(200,300):
             embed_src = "https://speckle.xyz/embed?stream="+stream.id
+            st.subheader("Generated model for" + prompt + ": ")
             st.components.v1.iframe(src=embed_src, height=400)
         else:
             response = response.text
+            st.markdown(''':red[Non-200 Error code recieved:]''')
+            st.markdown(response)
+
 
 
 
