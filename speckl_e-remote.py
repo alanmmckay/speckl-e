@@ -3,20 +3,22 @@ import streamlit as st
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
-# Set Meshy API key
-meshy_api_key = "msy_vl1Dmn5G7LVZwuv8CvMpBLcQbGSZTx2xykLg"
-headers = {
-    "Authorization": f"Bearer {meshy_api_key}"
-}
+# Default Meshy API key
+default_meshy_api_key = "msy_vl1Dmn5G7LVZwuv8CvMpBLcQbGSZTx2xykLg"
 
 st.subheader("Inputs")
 
 # Columns for inputs
-serverCol, tokenCol = st.columns([1, 3])
+serverCol, tokenCol, meshyCol = st.columns([1, 2, 2])
 
 # User Input boxes
 speckleServer = serverCol.text_input("Server URL", "speckle.xyz", help="Speckle server to connect.")
 speckleToken = tokenCol.text_input("Speckle token", "da1b5780f0f53e65b7f3a6b8601219f8cae43c3e76", help="If you don't know how to get your token, take a look at this [link](https://speckle.guide/dev/tokens.html)👈")
+meshy_api_key = meshyCol.text_input("Meshy API Key", default_meshy_api_key, help="Enter your Meshy API Key if different from the default.")
+
+headers = {
+    "Authorization": f"Bearer {meshy_api_key}"
+}
 
 # Inputs for Meshy
 object_prompt = st.text_input("Model Prompt:", "Describe the 3D model you want to generate...")
@@ -61,34 +63,24 @@ def save_model_locally(obj_url):
     return 'model.obj'
 
 def save_model_to_speckle(file_path):
-    f = open('model.obj','r')
-    data = f.read()
-    f.close()
-
     multipart_data = MultipartEncoder(
         fields={
-            'file': ('model.obj', open('model.obj','rb'), 'text/plain')
-            }
-        )
+            'file': ('model.obj', open(file_path, 'rb'), 'text/plain')
+        }
+    )
 
-    
-    endpoint='https://app.speckle.systems/api/file/autodetect/bf02f1cbbc/main'
-
-    files={
-        "file": (open('model.obj','rb'))
+    endpoint = 'https://app.speckle.systems/api/file/autodetect/bf02f1cbbc/main'
+    headers = {
+        "Authorization": f"Bearer {speckleToken}",
+        'Content-Type': multipart_data.content_type
     }
 
-    headers={
-        "Authorization" :"{}".format('da1b5780f0f53e65b7f3a6b8601219f8cae43c3e76')
-    }
+    response = requests.post(endpoint, data=multipart_data, headers=headers)
 
-    response=requests.post(url=endpoint,headers=headers,files=files)
-
-    if response.status_code == 200:
-        print(response.content)
+    if response.status_code in [200, 201]:
+        st.success("Model uploaded to Speckle successfully.")
     else:
-        response= response.text
-        print(response)
+        st.error(f"Failed to upload model to Speckle. Status code: {response.status_code}")
 
 def display_model(model_data):
     obj_url = model_data['model_urls']['obj']
