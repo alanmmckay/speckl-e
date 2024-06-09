@@ -6,7 +6,7 @@ import streamlit as st
 #specklepy libraries
 from specklepy.api.client import SpeckleClient
 from specklepy.api.credentials import get_account_from_token
-from shape-e import generate_local_model
+from shap_e import generate_local_model
 
 #--------------------------
 
