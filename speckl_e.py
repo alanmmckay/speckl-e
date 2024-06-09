@@ -111,17 +111,12 @@ with input:
 
         response=requests.post(url=endpoint,headers=headers,files=files)
 
-        # generate_button = st.button("Generate Model")
-
-        # if generate_button:
         if response:
-            print('got here')
             print(stream)
             print(stream.id)
             embed_src = "https://speckle.xyz/embed?stream="+str(stream.id)
             print(embed_src)
-        else:
-            st.markdown("...")
+
 
 with model:
     if embed_src:
