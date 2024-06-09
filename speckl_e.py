@@ -93,7 +93,6 @@ with input:
             st.markdown(e)
 
     if proceed:
-        proceed = False
 
         prompt = st.text_input("Prompt to generate new 3d model: ")
 
@@ -116,12 +115,21 @@ with input:
 
         # if generate_button:
         if response:
-            if response.status_code == 200:
-                embed_src = "https://speckle.xyz/embed?stream="+stream.id
+            def commit2viewer(stream, commit, height=400) -> str:
+                embed_src = "https://speckle.xyz/embed?stream="+stream.id+"&commit="+commit.id
+                print(embed_src)
+                return st.components.v1.iframe(src=embed_src, height=height)
+
+            branches = client.branch.list(stream.id)
+            commits = client.commit.list(stream.id, limit=100)
+
+            viewer = st.container()
+            with viewer:
                 st.subheader("Generated model for" + prompt + ": ")
-                st.components.v1.iframe(src=embed_src, height=400)
-            else:
-                st.markdown("...")
+                commit2viewer(stream, commits[0])
+
+        else:
+            st.markdown("...")
 
 
 
