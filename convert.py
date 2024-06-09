@@ -5,7 +5,7 @@ import os
 import trimesh
 
 # to run: streamlit run c:\Users\Minou\Desktop\convert.py
-
+# The script focuses solely on converting an OBJ file to G-code.
 #--------------------------
 # PAGE CONFIG
 st.set_page_config(
@@ -52,13 +52,15 @@ with input:
         temp_stl_path = temp_obj_path.replace('.obj', '.stl')
         mesh.export(temp_stl_path)
 
+        st.write(f"Converted to STL: {temp_stl_path}")
+
         # Generate G-code using CuraEngine
         with tempfile.NamedTemporaryFile(delete=False, suffix='.gcode') as temp_gcode:
             temp_gcode_path = temp_gcode.name
 
         # Ensure CuraEngine is installed and accessible in your system's PATH
         # Customize the path to the CuraEngine executable as needed
-        cura_engine_path = "C:\\Program Files\\UltiMaker Cura 5.7.2\\CuraEngine.exe"  # Replace with the actual path
+        cura_engine_path = "C:\\Program Files\\UltiMaker Cura 5.7.2\\CuraEngine.exe"  # Ensure that cura_engine_path points to the correct location of your CuraEngine executable.
 
         try:
             subprocess.run([
@@ -72,6 +74,7 @@ with input:
             ], check=True)
 
             st.success("G-code generation successful!")
+            st.write(f"G-code generated: {temp_gcode_path}")
             st.download_button(
                 label="Download G-code",
                 data=open(temp_gcode_path, 'rb').read(),
