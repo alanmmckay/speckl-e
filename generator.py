@@ -111,7 +111,8 @@ def calculate_filament_usage(gcode_path, layer_height, flow_modifier, extruder_d
     filament_length = filament_volume / (3.14159 * filament_radius * filament_radius)
     return filament_length
 
-def convert_to_gcode(obj_url, layer_height=0.2, flow_modifier=1.0, extruder_diameter=0.4, filament_diameter=1.75):
+#values are meant to be adjusted according to the type of 3D printer and type of filament.
+def convert_to_gcode(obj_url, layer_height=0.2, flow_modifier=1.0, extruder_diameter=0.8, filament_diameter=1.75):
     obj_data = requests.get(obj_url).content
     with tempfile.NamedTemporaryFile(delete=False, suffix='.obj') as temp_file:
         temp_file.write(obj_data)
@@ -147,7 +148,7 @@ def convert_to_gcode(obj_url, layer_height=0.2, flow_modifier=1.0, extruder_diam
         filament_length = calculate_filament_usage(temp_gcode_path, layer_height, flow_modifier, extruder_diameter, filament_diameter)
         st.success("G-code generation successful!")
         st.write(f"G-code generated: {temp_gcode_path}")
-        st.write(f"Filament used: {filament_length:.2f} meters")
+        st.write(f"Filament used: {filament_length:.2f} mm")
 
         # Replace old filament usage in the G-code file
         with open(temp_gcode_path, 'r') as gcode_file:
@@ -156,7 +157,7 @@ def convert_to_gcode(obj_url, layer_height=0.2, flow_modifier=1.0, extruder_diam
         with open(temp_gcode_path, 'w') as gcode_file:
             for line in gcode_lines:
                 if line.startswith(";Filament used:"):
-                    gcode_file.write(f";Filament used: {filament_length:.2f} meters\n")
+                    gcode_file.write(f";Filament used: {filament_length:.2f} mm\n")
                 else:
                     gcode_file.write(line)
 
