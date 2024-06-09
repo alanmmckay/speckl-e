@@ -106,7 +106,7 @@ with input:
         }
 
         headers={
-            "Authorization" :"{}".format('3449a8170a0bd5f1b9c8a1c6c03e9fadbc91928b34')
+            "Authorization" :"{}".format(speckleToken)
         }
 
         response=requests.post(url=endpoint,headers=headers,files=files)
@@ -115,24 +115,23 @@ with input:
 
         # if generate_button:
         if response:
-            def commit2viewer(stream, commit, height=400) -> str:
-                embed_src = "https://speckle.xyz/embed?stream="+stream.id+"&commit="+commit.id
-                print(embed_src)
-                return st.components.v1.iframe(src=embed_src, height=height)
-
+            print('got here')
+            print(stream)
+            print(stream.id)
             branches = client.branch.list(stream.id)
             commits = client.commit.list(stream.id, limit=100)
-
-            viewer = st.container()
-            with viewer:
-                st.subheader("Generated model for" + prompt + ": ")
-                commit2viewer(stream, commits[0])
-
         else:
             st.markdown("...")
 
 
+def commit2viewer(stream, commit, height=400) -> str:
+    embed_src = "https://speckle.xyz/embed?stream="+stream.id+"&commit="+commit.id
+    print(embed_src)
+    return st.components.v1.iframe(src=embed_src, height=height)
 
+with viewer:
+    st.subheader("Generated model for" + prompt + ": ")
+    commit2viewer(stream, commits[0])
 
 toggle = False
 
