@@ -6,6 +6,8 @@ import streamlit as st
 #specklepy libraries
 from specklepy.api.client import SpeckleClient
 from specklepy.api.credentials import get_account_from_token
+from shape-e import generate_local_model
+
 #--------------------------
 
 #--------------------------
@@ -29,7 +31,7 @@ graphs = st.container()
 #HEADER
 #Page Header
 with header:
-    st.title("Speckl-E upload  App")
+    st.title("Speckl-E App")
 #About info
 with header.expander("About this app", expanded=True):
     st.markdown(
@@ -49,9 +51,9 @@ with input:
     #-------
 
 	#User Input boxes
-    speckleServer = serverCol.text_input("Server URL", "speckle.xyz", help="Speckle server to connect.")
+    speckleServer = serverCol.text_input("Server URL","speckle.xyz", help="Speckle server to connect.")
     #"3449a8170a0bd5f1b9c8a1c6c03e9fadbc91928b34"
-    speckleToken = tokenCol.text_input("Speckle token", "3449a8170a0bd5f1b9c8a1c6c03e9fadbc91928b34", help="If you don't know how to get your token, take a look at this [link](<https://speckle.guide/dev/tokens.html>)👈")
+    speckleToken = tokenCol.text_input("Speckle token","3449a8170a0bd5f1b9c8a1c6c03e9fadbc91928b34", help="If you don't know how to get your token, take a look at this [link](<https://speckle.guide/dev/tokens.html>)👈")
 
     if speckleServer and speckleToken:
         try:
@@ -71,14 +73,14 @@ with input:
                 sName = st.selectbox(label="Select your stream", options=streamNames, index=None, help="Select your stream from the dropdown")
                 if sName:
                     stream = client.stream.search(sName)[0]
-                    print(stream.id)
+                    stream_id = stream.id
                     proceed = True
             else:
                 sName = st.text_input("Name of new Stream: ")
                 if sName and sName not in streamNames:
                     try:
-                        new_stream_id = client.stream.create(sName)
-                        stream = client.stream.get(id=new_stream_id)
+                        stream_id = client.stream.create(sName)
+                        stream = client.stream.get(id=stream_id)
                         proceed = True
                     except:
                         st.markdown("Error in new stream branch")
@@ -91,7 +93,30 @@ with input:
     if proceed:
         proceed = False
 
-        st.text_input("Prompt to generate new 3d model: ")
+        prompt = st.text_input("Prompt to generate new 3d model: ")
+
+        ### call to function which generates a 3d model and places an obj file into the folder in which this script is run. The call to this function should also return the name of the file.
+        obj_file = generate_local_model(prompt,stream_id)
+
+        endpoint='https://app.speckle.systems/api/file/autodetect/'+stream_id+'/main'
+
+        files={
+            "file": (open(obj_file,'rb'))
+        }
+
+        headers={
+            "Authorization" :"{}".format('3449a8170a0bd5f1b9c8a1c6c03e9fadbc91928b34')
+        }
+
+        response=requests.post(url=endpoint,headers=headers,files=files)
+
+        if response.status_code == 200:
+            embed_src = "https://speckle.xyz/embed?stream="+stream.id
+            st.components.v1.iframe(src=embed_src, height=400)
+        else:
+            response = response.text
+
+
 
 
 toggle = False
