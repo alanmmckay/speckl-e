@@ -2,6 +2,7 @@
 #IMPORT LIBRARIES
 #import streamlit
 import streamlit as st
+import streamlit.components.v1 as components
 # import streamlit.components.v1 as components
 #specklepy libraries
 from specklepy.api.client import SpeckleClient
@@ -24,9 +25,8 @@ st.set_page_config(
 #CONTAINERS
 header = st.container()
 input = st.container()
-viewer = st.container()
-report = st.container()
-graphs = st.container()
+model = st.container()
+embed_src = False;
 #--------------------------
 
 #--------------------------
@@ -56,7 +56,7 @@ with input:
     speckleServer = serverCol.text_input("Server URL","speckle.xyz", help="Speckle server to connect.")
     #"3449a8170a0bd5f1b9c8a1c6c03e9fadbc91928b34"
     speckleToken = tokenCol.text_input("Speckle token","3449a8170a0bd5f1b9c8a1c6c03e9fadbc91928b34", help="If you don't know how to get your token, take a look at this [link](<https://speckle.guide/dev/tokens.html>)👈")
-
+    stream = False
     if speckleServer and speckleToken:
         try:
             client = SpeckleClient(host=speckleServer)
@@ -92,7 +92,7 @@ with input:
             st.markdown(''':red[Failure to connect. Please ensure server URL and Speckle Token are correct.]''')
             st.markdown(e)
 
-    if proceed:
+    if stream:
 
         prompt = st.text_input("Prompt to generate new 3d model: ")
 
@@ -118,34 +118,11 @@ with input:
             print('got here')
             print(stream)
             print(stream.id)
-            branches = client.branch.list(stream.id)
-            commits = client.commit.list(stream.id, limit=100)
+            embed_src = "https://speckle.xyz/embed?stream="+str(stream.id)
+            print(embed_src)
         else:
             st.markdown("...")
 
-
-def commit2viewer(stream, commit, height=400) -> str:
-    embed_src = "https://speckle.xyz/embed?stream="+stream.id+"&commit="+commit.id
-    print(embed_src)
-    return st.components.v1.iframe(src=embed_src, height=height)
-
-with viewer:
-    st.subheader("Generated model for" + prompt + ": ")
-    commit2viewer(stream, commits[0])
-
-toggle = False
-
-if toggle:
-    #DEFINITIONS
-
-    #create a definition that generates an iframe from commit id
-    def commit2viewer(stream, commit, height=400) -> str:
-        embed_src = "https://speckle.xyz/embed?stream="+stream.id+"&commit="+commit.id
-        print(embed_src)
-        return st.components.v1.iframe(src=embed_src, height=height)
-
-    #VIEWER👁‍🗨
-    with viewer:
-        st.subheader("Latest Commit👇")
-        commit2viewer(stream, commits[0])
-    #--------------------------
+with model:
+    if embed_src:
+        components.iframe(src=embed_src)
